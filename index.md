@@ -41,13 +41,13 @@ Here is the distribution of the viral loads:
 
 In order to predict viral load from the EKG, I took the  samples of length 9000, normalized them, split them into 5 second chunks (ie 1500 timesteps per instance) and then ran a baseline neural network. 
 
-![Image](./cnn.png)
+<img src="./cnn.png" width="250">
 
 After training for 100 epochs, this network achieved validation loss of 0.3467, ie each prediction was 0.54 off from the actual target. This seemed way too high! Also, the number of parameters in comparison to the number of training samples meant that I'd overfit on the training data.
 
 Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load using the following simple LSTM, which had far fewer parameters.
 
-![Image](./lstm.png)
+<img src="./lstm.png" width="250">
 
 This resulted in a test mean squared error loss of 0.14555, meaning that the predictions were 0.37 off on average. Since the results were poor, for sanity's sake I ran a COVID/not COVID classifier using the COVID-19 dataset. Doing so yeilded a result that was worse that 50%. Given the binary nature of the classification task, this tipped me off that something was inherently wrong with our dataset. 
 
