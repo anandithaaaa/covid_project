@@ -1,33 +1,30 @@
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/anandithaaaa/covid_project/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Welcome to My Deep Learning Class Project!
 
 ### Abstract - in a paragraph or two, summarize the project 
 
-Using data from a novel study that collected EKGs for 14 days after a patient was diagnosed with COVID, I apply LSTMs and CNNs to predict whether the patient has COVID-19. 
+Using data from a novel study that collected EKGs for 14 days after a patient was diagnosed with COVID, I apply LSTMs and CNNs to predict whether the patient has COVID-19. There is reason to believe that the 
 
 ### Problem statement: Using a patient's EKG, can we detect whether they have COVID? 
 ### Dataset: what papers/ideas inspired you, what datasets did you use, etc
 
 There were 2 primary corpuses of data colleted during a collaboration between AliveCorr, a portable EKG company, and UW Medical Center.
 
-The control sample was X instances of data collected in 2019 from a total of Y patients. Each of the patients has between 1 and 8 distinct EKGs in the dataset. 
+The Control Dataset was X instances of data collected in 2019 from a total of Y patients. Each of the patients has between 1 and 8 distinct EKGs in the dataset. 
 
-The second was X instances of data collected after March of 2020. Y patients were diagnosed with COVID at the UW Medical Center, and each was sent home with a portable EKG machine. They were asked to self-administer both a COVID viral load test (a nasal swab) and the 30 second EKG using the AliveCorr device for 14 days proceeding their initial COVID positive result. 
+The Covid Dataset was 1750 instances of data collected after March of 2020. 130 patients were diagnosed with COVID at the UW Medical Center, and each was sent home with a portable EKG machine. They were asked to self-administer both a COVID viral load test (a nasal swab) and the 30-second EKG using the AliveCorr device for 14 days proceeding their initial COVID positive result. 
 
 Here is an example of that data over 14 days:
+
+
 
 The EKG data itself for each patient is a 9000 timestep EKG taken over a 30 second period. The signals look as follows: The peculiar thing about EKGs is that they're similar to a human fingerprint. The 
 
 ### Methodology - what is your approach/solution/what did you do?
 
 #### Data Cleaning & Initial Results
-This project began with the objective of detecting the exact viral load of a patient (recorded in the COVID-19 dataset as a result of the nasal swab. The viral loads themselves range between () and are only estimates, semiquantitative measures that represents the number of cycles needed to detect the virus. A viral load of 0 indicates no presense of the virus, whereas a viral load of > 0 indicates that the virus is present in the sample. In order to predict viral load from the EKG, I took the X samples of length 9000, normalized them, and then ran a baseline neural network. The results are as folllows.
+This project began with the objective of detecting the exact viral load of a patient (recorded in the COVID-19 dataset as a result of the nasal swab. The viral loads themselves range between () and are only estimates, semiquantitative measures that represents the number of cycles needed to detect the virus. A viral load of 0 indicates no presense of the virus, whereas a viral load of > 0 indicates that the virus is present in the sample. In order to predict viral load from the EKG, I took the X samples of length 9000, normalized them, split them into 5 second chunks (ie 1500 timesteps per instance) and then ran a baseline neural network. The results are as folllows.
 
-Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict a regression output using the following LSTM. Results are as follows. 
-
+Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load (a regression output) using the following LSTM. Results are as follows. 
 
 Since the results were poor, for sanity's sake I ran a COVID/not COVID classifier using the COVID-19 dataset. Doing so yeilded a result that was worse that 50%. Given the binary nature of the classification task, this tipped me off that something was inherently wrong with our dataset. 
 
