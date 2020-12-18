@@ -62,14 +62,18 @@ This seems to indicate 1 of 3 outcomes:
 #### Pretrained Model:
 Given the nature of the data and how I couldn't be certain about the labeling, I decided to reevaluate my approach. Using a seperate corpus of data (described above as the control sample) I created a pretrained model that predicted Age from EKGs. Given that age is a high fidelity label that we had access to, this method gave the model a good way to learn about EKG data in general. I tried a variety of model architectures for the base model, and froze the bottom layers to retrain a head on the COVID-19 data in order to predict whether a patient had COVID or didn't have COVID.
 
-### Experiments/evaluation - how are you evaluating your results
-### Results - How well did you do
-### Examples - images/text/live demo, anything to show off your work
+### Results & Plots:
+
+Using the model below, I achieved X accuracy.
+
+<img src="./transfer_learning.png" width="550">
+
+
+Here is a plot of the validation loss.
+
 
 ### Video - a 2-3 minute long video where you explain your project and the above information
 
-
-**Bold** and _Italic_ and `Code` text
 
 [Link](url) and ![Image](src)
 
