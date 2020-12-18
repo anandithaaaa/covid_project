@@ -15,7 +15,8 @@ The Covid Dataset was 1750 instances of data collected after March of 2020. 130 
 
 Here is an example of that data over 14 days:
 
-![](./patient1.png =250x250) ![](./patient2.png =250x250) ![](./patient3.png =250x250)
+<img src="./patient1.png" width="48">
+ ![](./patient2.png =250x250) ![](./patient3.png =250x250)
 
 The EKG data itself for each patient is a 9000 timestep EKG taken over a 30 second period. The signals look as follows: The peculiar thing about EKGs is that they're similar to a human fingerprint. The 
 
