@@ -41,44 +41,15 @@ Here is the distribution of the viral loads:
 
 In order to predict viral load from the EKG, I took the  samples of length 9000, normalized them, split them into 5 second chunks (ie 1500 timesteps per instance) and then ran a baseline neural network. 
 
-Layer (type)                 Output Shape              Param #   
-=================================================================
-flatten_3 (Flatten)          (None, 9000)              0         
-_________________________________________________________________
-dense_12 (Dense)             (None, 512)               4608512   
-_________________________________________________________________
-dense_13 (Dense)             (None, 256)               131328    
-_________________________________________________________________
-dense_14 (Dense)             (None, 128)               32896     
-_________________________________________________________________
-dense_15 (Dense)             (None, 1)                 129       
-=================================================================
-Total params: 4,772,865
-Trainable params: 4,772,865
-Non-trainable params: 0
+![Image](./cnn.png)
 
-After teining for 100 epochs, this network achieved validation loss of 0.3467, ie each prediction was 0.54 off from the actual target. This seemed way too high! Also, the number of parameters in comparison to the number of training samples meant that I'd overfit on the training data.
+After training for 100 epochs, this network achieved validation loss of 0.3467, ie each prediction was 0.54 off from the actual target. This seemed way too high! Also, the number of parameters in comparison to the number of training samples meant that I'd overfit on the training data.
 
-Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load using the following LSTM
+Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load using the following simple LSTM, which had far fewer parameters.
 
+![Image](./lstm.png)
 
-
-Layer (type)                 Output Shape              Param #   
-=================================================================
-conv1d (Conv1D)              (None, 8998, 64)          256       
-_________________________________________________________________
-lstm (LSTM)                  (None, 256)               328704    
-_________________________________________________________________
-dense_16 (Dense)             (None, 1)                 257       
-=================================================================
-Total params: 329,217
-Trainable params: 329,217
-Non-trainable params: 0
-
-
-Results are as follows. 
-
-Since the results were poor, for sanity's sake I ran a COVID/not COVID classifier using the COVID-19 dataset. Doing so yeilded a result that was worse that 50%. Given the binary nature of the classification task, this tipped me off that something was inherently wrong with our dataset. 
+This resulted in a test mean squared error loss of 0.14555, meaning that the predictions were on . Since the results were poor, for sanity's sake I ran a COVID/not COVID classifier using the COVID-19 dataset. Doing so yeilded a result that was worse that 50%. Given the binary nature of the classification task, this tipped me off that something was inherently wrong with our dataset. 
 
 #### Further Examination of the data:
 
