@@ -4,16 +4,14 @@ You can use the [editor on GitHub](https://github.com/anandithaaaa/covid_project
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
+### Abstract - in a paragraph or two, summarize the project
+### Problem statement - what are you trying to solve/do
+### Related work - what papers/ideas inspired you, what datasets did you use, etc
+### Methodology - what is your appr oach/solution/what did you do?
+### Experiments/evaluation - how are you evaluating your results
+### Results - How well did you do
+### Examples - images/text/live demo, anything to show off your work
+### Video - a 2-3 minute long video where you explain your project and the above information
 
 - Bulleted
 - List
@@ -25,13 +23,3 @@ Syntax highlighted code block
 
 [Link](url) and ![Image](src)
 ```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/anandithaaaa/covid_project/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
