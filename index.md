@@ -1,33 +1,82 @@
-## Welcome to My Deep Learning Class Project!
+## Convolutional Neural Networks to Predict the existance of COVID-19 using EKG
 
-### Abstract - in a paragraph or two, summarize the project 
+### Abstract
 
-Using data from a novel study that collected EKGs for 14 days after a patient was diagnosed with COVID, I apply LSTMs and CNNs to predict whether the patient has COVID-19. There is reason to believe that the 
+Given the rapid rise of the COVID-19 pandemic, lots of work has gone into devising sensitive and specific tests to detect the presense of COVID-19. There remains several open questions in creating rapid tests to determine disease severity, which would be a useful determinant of which patients to prioritize at intake in a hospital setting, and which patients are likely to need critical care. Using EKG data & corresponding viral loads from a pilot study at UW Medicine, I attempted to use LSTMs and CNNs to predict COVID-19 severity. Upon critical examination of the data and discovering low fidelity ground truth labels, I pivoted to creating a pretrained model based on control samples and used a CNN to predict whether a given patient has COVID-19 based on a 5 second sample from their EKG. This was highly effective, test accuracy was 97%.  
 
-### Problem statement: Using a patient's EKG, can we detect whether they have COVID? 
-### Dataset: what papers/ideas inspired you, what datasets did you use, etc
+### Problem Statement: 
+Using a patient's EKG, can we detect whether they have COVID? 
 
-There were 2 primary corpuses of data colleted during a collaboration between AliveCorr, a portable EKG company, and UW Medical Center.
+### Background & Dataset:
+
+Prior work suggests that a patient's EKG, ie the electrical signal from their heart, might be affected by the COVID-19 virus. In early 1999, biology researchers injected 31 rabbits with RbCV, a different coronavirus, and examined their serial EKGs by hand, measuring heart rate; P-R interval; QRS duration; QTc interval; and P-, QRS-, and T-wave voltages. The study concluded that "ECG changes observed during RbCV infection are similar to the spectrum of interval/segment abnormalities, rhythm disturbances, conduction defects, and myocardial pathology seen in human myocarditis, heart failure, and dilated cardiomyopathy. [1]" Given this information, and examining notable literature using signal processing and deep learning methods on EKGs [2, 3], an inherently time-dependent signal, leads us to consider using deep learning on the EKGs to detect COVID. 
+
+
+There were 2 primary corpuses of data colleted during a collaboration between AliveCorr, a portable EKG company (https://www.alivecor.com/kardiamobile6l/), and UW Medical Center.
 
 The Control Dataset was X instances of data collected in 2019 from a total of Y patients. Each of the patients has between 1 and 8 distinct EKGs in the dataset. 
 
 The Covid Dataset was 1750 instances of data collected after March of 2020. 130 patients were diagnosed with COVID at the UW Medical Center, and each was sent home with a portable EKG machine. They were asked to self-administer both a COVID viral load test (a nasal swab) and the 30-second EKG using the AliveCorr device for 14 days proceeding their initial COVID positive result. 
 
-Here is an example of that data over 14 days:
+Here is an example of the viral loads over 14 days:
 
 <img src="./patient1.png" width="250"> <img src="./patient2.png" width="250"> <img src="./patient3.png" width="250">
 
+As you might observe, not all patients have all 14 days of data, some have missing days in the middle of their progressions. 
 
-The EKG data itself for each patient is a 9000 timestep EKG taken over a 30 second period. The signals look as follows: The peculiar thing about EKGs is that they're similar to a human fingerprint. The 
+The EKG data itself for each patient is a 9000 timestep EKG taken over a 30 second period. The signals look as follows: 
 
 ![Image](./ekg_samples.png)
+
+The peculiar thing about EKGs is that they're similar to a human fingerprint. No two EKGs look the same, and hence any shift that might be cause by COVID-19 on the EKGs will look different from patient to patient.
 
 ### Methodology - what is your approach/solution/what did you do?
 
 #### Data Cleaning & Initial Results
-This project began with the objective of detecting the exact viral load of a patient (recorded in the COVID-19 dataset as a result of the nasal swab. The viral loads themselves range between () and are only estimates, semiquantitative measures that represents the number of cycles needed to detect the virus. A viral load of 0 indicates no presense of the virus, whereas a viral load of > 0 indicates that the virus is present in the sample. In order to predict viral load from the EKG, I took the X samples of length 9000, normalized them, split them into 5 second chunks (ie 1500 timesteps per instance) and then ran a baseline neural network. The results are as folllows.
+This project began with the objective of detecting the exact viral load of a patient (recorded in the COVID-19 dataset as a result of the nasal swab. The viral loads themselves range between 15 and 45 and in our dataset, they are a semiquantitative measure that represents the number of cycles needed to detect the virus. A viral load of 0 indicates no presense of the virus, whereas a viral load of > 0 indicates that the virus is detectible within the sample. 
 
-Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load (a regression output) using the following LSTM. Results are as follows. 
+Here is the distribution of the viral loads:
+
+![Image](./viral_dist.png)
+
+In order to predict viral load from the EKG, I took the  samples of length 9000, normalized them, split them into 5 second chunks (ie 1500 timesteps per instance) and then ran a baseline neural network. 
+
+Layer (type)                 Output Shape              Param #   
+=================================================================
+flatten_3 (Flatten)          (None, 9000)              0         
+_________________________________________________________________
+dense_12 (Dense)             (None, 512)               4608512   
+_________________________________________________________________
+dense_13 (Dense)             (None, 256)               131328    
+_________________________________________________________________
+dense_14 (Dense)             (None, 128)               32896     
+_________________________________________________________________
+dense_15 (Dense)             (None, 1)                 129       
+=================================================================
+Total params: 4,772,865
+Trainable params: 4,772,865
+Non-trainable params: 0
+
+After teining for 100 epochs, this network achieved validation loss of 0.3467, ie each prediction was 0.54 off from the actual target. This seemed way too high! Also, the number of parameters in comparison to the number of training samples meant that I'd overfit on the training data.
+
+Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load using the following LSTM
+
+
+
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv1d (Conv1D)              (None, 8998, 64)          256       
+_________________________________________________________________
+lstm (LSTM)                  (None, 256)               328704    
+_________________________________________________________________
+dense_16 (Dense)             (None, 1)                 257       
+=================================================================
+Total params: 329,217
+Trainable params: 329,217
+Non-trainable params: 0
+
+
+Results are as follows. 
 
 Since the results were poor, for sanity's sake I ran a COVID/not COVID classifier using the COVID-19 dataset. Doing so yeilded a result that was worse that 50%. Given the binary nature of the classification task, this tipped me off that something was inherently wrong with our dataset. 
 
@@ -51,11 +100,6 @@ I used the pretrained model and attached a custom head. Results. Tuning.
 
 ### Video - a 2-3 minute long video where you explain your project and the above information
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
 
 **Bold** and _Italic_ and `Code` text
 
