@@ -67,15 +67,15 @@ With over 10 different model architectures, the highest accuracy I achieved when
 
 ### Discussion of Results:
 
-This project was unsucessful for one of a couple reasons I can identify:
+This project didn't yeild a highly accurate model for one of a couple reasons I can identify:
 
 - Each sample EKG was 9000 timesteps, and I broke each EKG into 6 instances of 1500 consecutive timesteps to aid in training.
 
 <---------All 9000 steps from 1 EKG---------------> became:
 
-<---------1st 1500 steps from the EKG ---------------> 
-<---------2nd 1500 steps from the EKG --------------->.....
-<---------6th 1500 steps from the EKG --------------->
+<---------1st 1500 steps from the EKG ---------------> \n
+<---------2nd 1500 steps from the EKG --------------->..... \n
+<---------6th 1500 steps from the EKG ---------------> \n
 
 
 1500 timesteps contains 5 seconds worth of data, ie signal for around 12 beats. Any given patient's similar 12 beat signal is repeated (from later portions of the time series) at least 5 times as seen above. Each patient is repeated in the dataset between 1 and 8 times from different days that the patient contributed EKGs to the control study. Each patient is repeated in the dataset between 1 and 14 times from different days that the patient contributed EKGs to the covid study. Thereby, very similar 12 beat samples can occur up to 84 time as seperate data instances. (Remember above when I said that an EKG is kinda like a fingerprint?) This is just a flaw with the dataset, causing lots of similar looking samples to appear in the data.
@@ -96,7 +96,7 @@ This project was unsucessful for one of a couple reasons I can identify:
 - This study asked patients to self administer EKGs, and thereby there could be lots of variance in their EKGs caused by them getting used to the devices or not self administering correctly. 
 - Further examination of the data and some expert knowledge might help weed out data samples that are likely caused by the machine moving or the patient self administering the EKG incorrectly. 
 
-### Results & Plots:
+### Results:
 
 Using the model below, I achieved 75% validation accuracy and 64% test accuracy predicting Covid/Not Covid.
 
