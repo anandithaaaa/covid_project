@@ -102,11 +102,10 @@ Using the model below, I achieved 75% validation accuracy and 64% test accuracy 
 
 <img src="./tl_final.png" width="550">
 
-I can't share the data unfortunately, so linking to the notebook that I ran my code with isn't that helpful. 
-
 ### Video:
 
-Here's a video of me talking about the project :) 
+Here's a video of me talking about the project :) I can't share the data, so my colab notebook probably won't be that useful.
+
 
 [Link](https://drive.google.com/file/d/1fXA5CyyuN9WDWiQDSBVClNdmmaVF52fO/view?usp=sharing)
 
