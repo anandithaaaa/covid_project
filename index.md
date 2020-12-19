@@ -1,4 +1,4 @@
-## Convolutional Neural Networks to Predict the existance of COVID-19 using EKG
+## Convolutional Neural Networks to Predict whether a patient has COVID-19 based on their EKG
 
 ### Abstract
 
