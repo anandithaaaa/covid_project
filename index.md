@@ -81,7 +81,7 @@ With over 10 different model architectures, the highest accuracy I achieved when
 1500 timesteps contains 5 seconds worth of data, ie signal for around 12 beats. Any given patient's 12 beat signal is repeated (from later portions of the time series) at least 6 times as seen above. Each patient is repeated in the dataset between 1 and 8 times from different days that the patient contributed EKGs to the control study. Each patient is repeated in the dataset between 1 and 14 times from different days that the patient contributed EKGs to the covid study. Thereby, very similar 12 beat samples can occur up to 84 time as seperate data instances. This is just a flaw with how the data is in the set, allowing each patient to contribute only one instance to the dataset would reduce our sample to 300 control EKGs and 138 covid EKGs. Thus overfitting on the training sample occurs extremely quick, within 10 epochs. In order to prevent this, I used methods we learned in class, like reducing the complexity of our model by increasing the kernal size. In 2D spaces, with too high a kernal size, it's too hard to learn. In 1D, I turned the kernal from 3 to 9, allowing me to view and learn from larger windows. I removed Dense layers as much as possible. I increased the pooling factor to increase learnability and reduce the chance of overfitting. I used 3 conv layers so that we can lower the complexity further. I used dropout to help with overfitting as well. 
 
 - I tried Tanh and sigmoid for the last layers, modifying the targets, and using bce and mse losses. 
-In case you're wondering I made sure to keep patients in the training sample out of the test sample to avoid inflating my accuracy :) 
+- In case you're wondering I made sure to keep patients in the training sample out of the test sample to avoid inflating my accuracy :) 
 - I ensured that the training sample for the custom head contained 70% control EKGs and 30% COVID EKGs. 
 - There might not be a reason to believe that the COVID-19 virus acts on humans as the RbCV virus affect rabbit EKGs in 1999.
 - This study asked patients to self administer EKGs, and thereby there could be lots of variance in their EKGs caused by them getting used to the devices. 
@@ -90,6 +90,7 @@ In case you're wondering I made sure to keep patients in the training sample out
 ### Results & Plots:
 
 Using the model below, I achieved 75% validation accuracy and 64% test accuracy predicting Covid/Not Covid.
+<img src="./tl_final.png" width="550">
 
 
 I can't share the data unfortunately, so linking to the notebook that I ran my code with isn't that helpful. 
