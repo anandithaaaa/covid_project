@@ -1,4 +1,4 @@
-## Convolutional Neural Networks to Predict whether a patient has COVID-19 based on their EKG
+## Convolutional Neural Networks to Predict whether existance of COVID-19 based on EKG
 
 ### Abstract
 
@@ -25,7 +25,7 @@ The EKG data itself for each patient is a 9000 timestep EKG taken over a 30 seco
 
 The peculiar thing about EKGs is that they're similar to a human fingerprint. No two EKGs look the same, and hence any shift that might be cause by COVID-19 on the EKGs will look different from patient to patient. This makes it hard to identify for shifts without a baseline.
 
-### Methodology - what is your approach/solution/what did you do?
+### Methodology
 
 #### Data Cleaning & Initial Results
 This project began with the objective of detecting the exact viral load of a patient (recorded in the COVID-19 dataset as a result of the nasal swab. The viral loads themselves range between 15 and 45 and in our dataset, they are a semiquantitative measure that represents the number of cycles needed to detect the virus. A viral load of 0 indicates no presense of the virus, whereas a viral load of > 0 indicates that the virus is detectible within the sample. 
@@ -65,7 +65,6 @@ I tried a variety of model architectures for the base model, and froze the botto
 
 With over 10 different model architectures, the highest accuracy I achieved when I trained the custom head was 68% on the test set. 
 
-
 ### Discussion of Results:
 
 This project was unsucessful for one of a couple reasons I can identify:
@@ -79,7 +78,7 @@ This project was unsucessful for one of a couple reasons I can identify:
 <---------6th 1500 steps from the EKG --------------->
 
 
-1500 timesteps contains 5 seconds worth of data, ie signal for around 12 beats. Any given patient's 12 beat signal is repeated (from later portions of the time series) at least 6 times as seen above. Each patient is repeated in the dataset between 1 and 8 times from different days that the patient contributed EKGs to the control study. Each patient is repeated in the dataset between 1 and 14 times from different days that the patient contributed EKGs to the covid study. Thereby, very similar 12 beat samples can occur up to 84 time as seperate data instances. (Remember above when I said that an EKG is kinda like a fingerprint?) This is just a flaw with the dataset, causing lots of similar looking samples to appear in the data.
+1500 timesteps contains 5 seconds worth of data, ie signal for around 12 beats. Any given patient's similar 12 beat signal is repeated (from later portions of the time series) at least 5 times as seen above. Each patient is repeated in the dataset between 1 and 8 times from different days that the patient contributed EKGs to the control study. Each patient is repeated in the dataset between 1 and 14 times from different days that the patient contributed EKGs to the covid study. Thereby, very similar 12 beat samples can occur up to 84 time as seperate data instances. (Remember above when I said that an EKG is kinda like a fingerprint?) This is just a flaw with the dataset, causing lots of similar looking samples to appear in the data.
 
 - One way to circumvent this problem would be to restrict each patient to contribute only one instance to the dataset, but this would reduce our sample to 300 control EKGs and 138 covid EKGs. Even with around 60,000 training EKGs, overfitting on the training sample occurs extremely quick, within 10 epochs. In order to reduce the amount of overfitting in our model, I used methods we learned in class, for example:
   - I reduced the complexity of our model by increasing the kernal size. In 2D spaces, with too high a kernal size, it's too hard to learn. In 1D, I turned the kernal from 3 to 9, allowing me to view and learn from larger windows. 
