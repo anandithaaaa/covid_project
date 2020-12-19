@@ -108,7 +108,7 @@ I can't share the data unfortunately, so linking to the notebook that I ran my c
 
 Here's a video of me talking about the project :) 
 
-[Link](url)
+[Link](https://drive.google.com/file/d/1fXA5CyyuN9WDWiQDSBVClNdmmaVF52fO/view?usp=sharing)
 
 ### References:
 
