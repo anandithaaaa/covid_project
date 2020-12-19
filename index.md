@@ -14,7 +14,7 @@ Prior work suggests that a patient's EKG, ie the electrical signal from their he
 
 There were 2 primary corpuses of data colleted during a collaboration between AliveCorr, a portable EKG company (https://www.alivecor.com/kardiamobile6l/), and UW Medical Center.
 
-The Control Dataset was X instances of data collected in 2019 from a total of Y patients. Each of the patients has between 1 and 8 distinct EKGs in the dataset. 
+The Control Dataset was 16,500 instances of data collected in 2019 from a total of 3,600 patients. Each of the patients has between 1 and 8 distinct EKGs in the dataset. 
 
 The Covid Dataset was 1750 instances of data collected after March of 2020. 130 patients were diagnosed with COVID at the UW Medical Center, and each was sent home with a portable EKG machine. They were asked to self-administer both a COVID viral load test (a nasal swab) and the 30-second EKG using the AliveCorr device for 14 days proceeding their initial COVID positive result. 
 
@@ -28,7 +28,7 @@ The EKG data itself for each patient is a 9000 timestep EKG taken over a 30 seco
 
 ![Image](./ekg_samples.png)
 
-The peculiar thing about EKGs is that they're similar to a human fingerprint. No two EKGs look the same, and hence any shift that might be cause by COVID-19 on the EKGs will look different from patient to patient.
+The peculiar thing about EKGs is that they're similar to a human fingerprint. No two EKGs look the same, and hence any shift that might be cause by COVID-19 on the EKGs will look different from patient to patient. This makes it hard to identify for shifts without a baseline.
 
 ### Methodology - what is your approach/solution/what did you do?
 
@@ -43,7 +43,7 @@ In order to predict viral load from the EKG, I took the  samples of length 9000,
 
 <img src="./cnn.png" width="550">
 
-After training for 100 epochs, this network achieved validation loss of 0.3467, ie each prediction was 0.54 off from the actual target. This seemed way too high! Also, the number of parameters in comparison to the number of training samples meant that I'd overfit on the training data.
+After training for 100 epochs, this network achieved validation loss of 0.3467, ie each prediction was 0.54 off from the actual target. This seemed way too high given that the variance in the data was only 0.4! Also, the number of parameters in comparison to the number of training samples meant that I'd surely overfit on the training data.
 
 Given the timeseries nature of the EKG (a signal) I realized that an LSTM might be able to capture the signal more accurately. Hence I ran a model to predict viral load using the following simple LSTM, which had far fewer parameters.
 
@@ -57,20 +57,42 @@ This happened to be around the time of the Andrej Karpathy lecture, and as per h
 This seems to indicate 1 of 3 outcomes:
 - the patients were not adequately compliant with the guidelines on how to carry out the nasal swab, or 
 - the patients were compliant, but the sensitivity of the test was too low to detect the virus on those given days (false negative)
-- or finally, that the virus itself ebbs and flows in it's severity over the 14 day period
+- or finally, that the virus itself ebbs and flows in it's severity over the 14 day period.
 
 #### Pretrained Model:
-Given the nature of the data and how I couldn't be certain about the labeling, I decided to reevaluate my approach. Using a seperate corpus of data (described above as the control sample) I created a pretrained model that predicted Age from EKGs. Given that age is a high fidelity label that we had access to, this method gave the model a good way to learn about EKG data in general. I tried a variety of model architectures for the base model, and froze the bottom layers to retrain a head on the COVID-19 data in order to predict whether a patient had COVID or didn't have COVID.
-
-### Results & Plots:
-
-Using the model below, I achieved X accuracy.
+Given the nature of the data and how I couldn't be certain about the labeling of viral loads, I decided to reevaluate my approach. Using a separate corpus of data (described above as the control sample) I created a pretrained model that predicted Age from EKGs. Given that age is a high fidelity label that we had access to, this method gave the model a good way to learn about EKG data in general. This was the model I used:
 
 <img src="./transfer_learning.png" width="550">
 
+MSE loss on the test set was 0.X, which meant that the on average the model was 6 years off when guessing age. Not the best, but not the worst, given that there really isn't a huge connection between a patient's EKG and their age. 
 
-Here is a plot of the validation loss.
+I tried a variety of model architectures for the base model, and froze the bottom layers to retrain a head on the COVID-19 data in order to predict whether a patient had COVID or didn't have COVID.
 
+With over 10 different model architectures, the highest accuracy I achieved when I trained the custom head was 68%. This is for a variety of reasons I can identify:
+- Each sample EKG was 9000 timesteps, and I broke each EKG into 6 instances of 1500 consecutive timesteps to aid in training.
+
+<---------All 9000 steps from 1 EKG---------------> became:
+
+<---------1st 1500 steps from the EKG ---------------> 
+<---------2nd 1500 steps from the EKG --------------->.....
+<---------6th 1500 steps from the EKG --------------->
+
+
+1500 timesteps contains 5 seconds worth of data, ie signal for around 12 beats. Any given patient's 12 beat signal is repeated (from later portions of the time series) at least 6 times as seen above. Each patient is repeated in the dataset between 1 and 8 times from different days that the patient contributed EKGs to the control study. Each patient is repeated in the dataset between 1 and 14 times from different days that the patient contributed EKGs to the covid study. Thereby, very similar 12 beat samples can occur up to 84 time as seperate data instances. This is just a flaw with how the data is in the set, allowing each patient to contribute only one instance to the dataset would reduce our sample to 300 control EKGs and 138 covid EKGs. Thus overfitting on the training sample occurs extremely quick, within 10 epochs. In order to prevent this, I used methods we learned in class, like reducing the complexity of our model by increasing the kernal size. In 2D spaces, with too high a kernal size, it's too hard to learn. In 1D, I turned the kernal from 3 to 9, allowing me to view and learn from larger windows. I removed Dense layers as much as possible. I increased the pooling factor to increase learnability and reduce the chance of overfitting. I used 3 conv layers so that we can lower the complexity further. I used dropout to help with overfitting as well. 
+
+- I tried Tanh and sigmoid for the last layers, modifying the targets, and using bce and mse losses. 
+In case you're wondering I made sure to keep patients in the training sample out of the test sample to avoid inflating my accuracy :) 
+- I ensured that the training sample for the custom head contained 70% control EKGs and 30% COVID EKGs. 
+- There might not be a reason to believe that the COVID-19 virus acts on humans as the RbCV virus affect rabbit EKGs in 1999.
+- This study asked patients to self administer EKGs, and thereby there could be lots of variance in their EKGs caused by them getting used to the devices. 
+- Further research.
+
+### Results & Plots:
+
+Using the model below, I achieved 75% validation accuracy and 64% test accuracy predicting Covid/Not Covid.
+
+
+I can't share the data unfortunately, so linking to the notebook that I ran my code with isn't that helpful. 
 
 ### Video - a 2-3 minute long video where you explain your project and the above information
 
