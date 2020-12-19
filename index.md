@@ -73,9 +73,9 @@ This project didn't yeild a highly accurate model for one of a couple reasons I 
 
 <---------All 9000 steps from 1 EKG---------------> became:
 
-<---------1st 1500 steps from the EKG ---------------> \n
-<---------2nd 1500 steps from the EKG --------------->..... \n
-<---------6th 1500 steps from the EKG ---------------> \n
+<---------1st 1500 steps from the EKG ---------------> \
+<---------2nd 1500 steps from the EKG --------------->..... \
+<---------6th 1500 steps from the EKG --------------->  \
 
 
 1500 timesteps contains 5 seconds worth of data, ie signal for around 12 beats. Any given patient's similar 12 beat signal is repeated (from later portions of the time series) at least 5 times as seen above. Each patient is repeated in the dataset between 1 and 8 times from different days that the patient contributed EKGs to the control study. Each patient is repeated in the dataset between 1 and 14 times from different days that the patient contributed EKGs to the covid study. Thereby, very similar 12 beat samples can occur up to 84 time as seperate data instances. (Remember above when I said that an EKG is kinda like a fingerprint?) This is just a flaw with the dataset, causing lots of similar looking samples to appear in the data.
